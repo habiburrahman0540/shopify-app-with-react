@@ -17,7 +17,6 @@ class ShopProvider extends Component{
         isMenuOpen:false,
     };
     componentDidMount(){
-        this.fetchAllProducts();
         if(localStorage.checkout_id){
             this.fetchCheckout(localStorage.checkout_id);
         }else{
@@ -62,8 +61,7 @@ class ShopProvider extends Component{
         
     }
     render(){
-        console.log("checkout",this.state.checkout);
-        console.log("products",this.state.products);
+    
         return (
             <ShopContext.Provider value={{}}>
                     {this.props.children}
