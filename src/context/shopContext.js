@@ -48,6 +48,17 @@ class ShopProvider extends Component{
         const product = await client.product.fetchByHandle(handle);
         this.setState({product})
     }
+    fetchAllWithProducts=async()=>{
+        const collections =client.collection.fetchAllWithProducts();
+        this.setState({collections:collections});
+
+    }
+    // fetchWithProducts=async()=>{
+    //     const collectionId = process.env.SHOPIFY_COLLECTIONID;
+    //     const collection = await client.collection.fetchWithProducts(collectionId, {productsFirst: 10});
+    //     const collectionByProduct = collection.products;
+    //     this.setState({collections:collectionByProduct});
+    // }
     closeCart=()=>{
         
     }
@@ -65,14 +76,16 @@ class ShopProvider extends Component{
         return (
             <ShopContext.Provider value={{
                 ...this.state,
-                fetchAllProducts: this.fetchAllProducts,
-                fetchProductWithHandle: this.fetchProductWithHandle,
-                addItemsToCheckout:this.addItemsToCheckout,
-                removeLineItem:this.removeLineItem,
-                openCart: this.openCart,
-                closeCart: this.closeCart,
-                openMenu:this.openMenu,
-                closeMenu: this.closeMenu
+               fetchAllProducts: this.fetchAllProducts,
+               fetchProductWithHandle:this.fetchProductWithHandle,
+               fetchAllWithProducts:this.fetchAllWithProducts,
+               fetchWithProducts:this.fetchWithProducts,
+               addItemsToCheckout:this.addItemsToCheckout,
+               removeLineItem: this.removeLineItem,
+               openCart:this.openCart,
+               closeCart:this.closeCart,
+               openMenu:this.openMenu,
+               closeMenu:this.closeMenu
             }}>
                     {this.props.children}
             </ShopContext.Provider>
