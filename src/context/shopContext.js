@@ -15,6 +15,7 @@ class ShopProvider extends Component{
         checkout:{},
         isCartOpen:false,
         isMenuOpen:false,
+       
     };
     componentDidMount(){
         if(localStorage.checkout_id){
@@ -34,12 +35,48 @@ class ShopProvider extends Component{
             this.setState({checkout})
         })
     }
-    addItemsToCheckout=async()=>{
-        
-    }
-    removeLineItem=async(lineItemIdToRemove)=>{
-        
-    }
+    addItemsToCheckout=async(variantId,quantity) =>{
+        const lineItemsToAdd=[
+          {
+            variantId,
+            quantity:parseInt(quantity,10),
+            
+          }
+        ];
+        const checkout = await client.checkout.addLineItems(this.state.checkout.id, lineItemsToAdd);
+        this.setState({checkout:checkout});
+        this.openCart();
+      
+      }
+      updateLineItem=async ({ variantId, quantity}) => {
+
+        // check to see if this variantId exists in storedCheckout
+        const lineItemVariant = this.state.checkout.lineItems.find(
+          lineItem => lineItem.variant.id === variantId
+        );
+      
+        if (lineItemVariant) {
+          const newQuantity = lineItemVariant.quantity + quantity;
+      
+         
+            const checkout = await client.checkout.updateLineItems(this.state.checkout.id, [
+              {
+                id: lineItemVariant.id,
+                quantity: newQuantity,
+              },
+            ]);
+            this.setState({checkout:checkout});
+          
+        }
+      }
+    removeLineItem=async(lineItemIdsToRemove) =>{
+        const checkout = await client.checkout.removeLineItems(this.state.checkout.id, lineItemIdsToRemove);
+        this.setState({checkout:checkout});
+      }
+      handleAdjustQuantity =({variantId,quantity})=>{
+        this.updateLineItem({variantId,quantity});
+      }
+
     fetchAllProducts=async()=>{
         const products= await client.product.fetchAll();
         this.setState({products});
@@ -60,16 +97,16 @@ class ShopProvider extends Component{
     //     this.setState({collections:collectionByProduct});
     // }
     closeCart=()=>{
-        
+        this.setState({isCartOpen:false});
     }
     openCart=()=>{
-        
+        this.setState({isCartOpen:true});
     }
     closeMenu=()=>{
-        
+        this.setState({isMenuOpen:false});
     }
     openMenu=()=>{
-        
+        this.setState({isMenuOpen:true});
     }
     render(){
     
@@ -81,7 +118,9 @@ class ShopProvider extends Component{
                fetchAllWithProducts:this.fetchAllWithProducts,
                fetchWithProducts:this.fetchWithProducts,
                addItemsToCheckout:this.addItemsToCheckout,
+               updateLineItem:this.updateLineItem,
                removeLineItem: this.removeLineItem,
+               handleAdjustQuantity:this.handleAdjustQuantity,
                openCart:this.openCart,
                closeCart:this.closeCart,
                openMenu:this.openMenu,

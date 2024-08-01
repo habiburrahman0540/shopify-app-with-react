@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import {ShopContext} from '../context/shopContext';
 const ProductPage = () => {
-    const {fetchProductWithHandle,addItemToCheckout,product,checkout} = useContext(ShopContext);
+    const {fetchProductWithHandle,addItemsToCheckout,product,checkout} = useContext(ShopContext);
     const {handle} = useParams();
     const toast = useToast();
     const currency= checkout.currencyCode
@@ -19,7 +19,7 @@ const ProductPage = () => {
       <Box p="2rem">
           <Grid templateColumns={["repeat(1, 1fr)","repeat(2, 1fr)"]} m="auto">
             <Flex justifyContent="center" alignItems="center">
-              <Image src={product.images[0].src}/>
+              <Image src={product.images[0].src} borderRadius="5px"/>
               </Flex>
               <Flex flexDirection="column" alignItems="center" justifyContent="center" px="2rem">
                 <Heading pb="1rem">{product.title}</Heading>
@@ -31,7 +31,7 @@ const ProductPage = () => {
                     status: 'success',
                     duration: 1000,
                     isClosable: true,
-                  }) && addItemToCheckout(product.variants[0].id, 1)}>Add to Cart
+                  }) && addItemsToCheckout(product.variants[0].id, 1)}>Add to Cart
                 </Button>
               </Flex>
           </Grid>
